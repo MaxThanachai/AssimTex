@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2630087382364712636}
   - component: {fileID: 8078222478530335892}
   - component: {fileID: 4944320337030181306}
+  - component: {fileID: 5860270753175099208}
   m_Layer: 0
   m_Name: PlayerController
   m_TagString: Untagged
@@ -110,3 +111,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ThrusterPower: 1000
   TurningTorque: 300
+--- !u!114 &5860270753175099208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1965476554229058147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9f5a7ba3c50d4bf1ae8ab3371877a33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placeholderPrefab: {fileID: 2102942953600993953, guid: 4a3b9851b1388480799f3c8a8f43e190, type: 3}

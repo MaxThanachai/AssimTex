@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// TODO: Change to GridManager
 public class GridsManager : MonoBehaviour
 {
     public GameObject pilotPrefab;
@@ -17,7 +19,7 @@ public class GridsManager : MonoBehaviour
     {
         grids[1, 1] = Instantiate(pilotPrefab, transform.position, transform.rotation, transform);
         grids[1, 2] = Instantiate(gridPrefab, transform.position, transform.rotation, transform);
-        CalculateGrids();
+        CalculateGridHint();
     }
 
     void Update()
@@ -43,7 +45,7 @@ public class GridsManager : MonoBehaviour
         }
     }
 
-    void CalculateGrids()
+    void CalculateGridHint()
     {
         for (int c = 0; c < column; c++)
         {
@@ -76,8 +78,35 @@ public class GridsManager : MonoBehaviour
         }
     }
 
-    public void AddObject(int row, int column, GameObject block)
+    Grid WorldPositionToGrid(Vector3 worldPosition)
     {
-        grids[row, column] = block;
+        Vector3 localPosition = transform.InverseTransformPoint(worldPosition);
+        int x = (int)Math.Round(localPosition.x);
+        int y = (int)Math.Round(localPosition.y);
+        return new Grid(x + pilotColumn, pilotRow - y);
+    }
+
+    public void NotifyDroppedLooseBlock(Vector3 worldPosition)
+    {
+        Grid grid = WorldPositionToGrid(worldPosition);
+        Debug.Log(grid.x + ", " + grid.y);
+    }
+
+    // public void AddObject(int row, int column, GameObject block)
+    // {
+    //     grids[row, column] = block;
+    // }
+
+}
+
+class Grid
+{
+    public int x;
+    public int y;
+
+    public Grid(int x, int y)
+    {
+        this.x = x;
+        this.y = y;
     }
 }
