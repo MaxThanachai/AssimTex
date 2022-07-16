@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GridsManager : MonoBehaviour
 {
+    public GameObject pilotPrefab;
     public GameObject gridPrefab;
 
     private int column = 3;
@@ -14,7 +15,7 @@ public class GridsManager : MonoBehaviour
 
     void Start()
     {
-        grids[1, 1] = gameObject;
+        grids[1, 1] = Instantiate(pilotPrefab, transform.position, transform.rotation, transform);
         grids[1, 2] = Instantiate(gridPrefab, transform.position, transform.rotation, transform);
         CalculateGrids();
     }
@@ -33,9 +34,9 @@ public class GridsManager : MonoBehaviour
                 if (grids[c, r] != null)
                 {
                     GameObject block = grids[c, r];
-                    float x = transform.position.x + (c - pilotColumn);
-                    float y = transform.position.y + (r - pilotRow);
-                    block.transform.position = new Vector3(x, y, 0);
+                    float x = c - pilotColumn;
+                    float y = r - pilotRow;
+                    block.transform.localPosition = new Vector3(x, y, 0);
                     block.transform.rotation = transform.rotation;
                 }
             }
