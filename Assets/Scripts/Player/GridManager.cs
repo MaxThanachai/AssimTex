@@ -12,7 +12,9 @@ public class GridManager : MonoBehaviour
     private int row = 3;
     private int pilotColumn = 1;
     private int pilotRow = 1;
+    // TODO: use dictionary <Grid, GameObject> instead; this thing needs resize!
     private GameObject[,] grids = new GameObject[3, 3];
+    private Dictionary<Grid, Collider2D> colliders = new Dictionary<Grid, Collider2D>();
 
     void Start()
     {
@@ -36,7 +38,7 @@ public class GridManager : MonoBehaviour
                 {
                     GameObject block = grids[c, r];
                     float x = c - pilotColumn;
-                    float y = r - pilotRow;
+                    float y = pilotRow - r;
                     block.transform.localPosition = new Vector3(x, y, 0);
                     // block.transform.rotation = transform.rotation;
                 }
@@ -50,7 +52,7 @@ public class GridManager : MonoBehaviour
         {
             for (int r = 0; r < row; r++)
             {
-                if (grids[c, r] != null && grids[c, r].GetComponent<Block>() != null)
+                if (grids[c, r] != null && grids[c, r].GetComponent<AssembledBlock>() != null)
                 {
                     // left
                     if (c > 0 && grids[c - 1, r] == null)
@@ -85,15 +87,38 @@ public class GridManager : MonoBehaviour
         return new Grid(x + pilotColumn, pilotRow - y);
     }
 
-    public void NotifyDroppedLooseBlock(Vector3 worldPosition)
+    // TODO: Refactor this function, make it calls another one
+    public void NotifyDroppedLooseBlock(Vector3 worldPosition, GameObject looseBlock)
     {
         Grid grid = WorldPositionToGrid(worldPosition);
         Debug.Log(grid.x + ", " + grid.y);
 
-        // filter out
+        // filter out index out of length
+        if (grid.x < 0 || grid.y < 0 || grid.x > grids.GetUpperBound(0) || grid.y > grids.GetUpperBound(1))
+        {
+            return;
+        }
+
+        // check if there is an empty space on that grid
+        if (grids[grid.x, grid.y] != null && grids[grid.x, grid.y].GetComponent<GridHint>() != null)
+        {
+            // Add an assembled block to that space with health taken from the original block
+            int newBlockHealth = looseBlock.GetComponent<LooseBlock>().healthPoint;
+            GameObject newBlockPrefab = looseBlock.GetComponent<LooseBlock>().assembledPrefab;
+            GameObject newBlock = Instantiate(newBlockPrefab, transform.position, transform.rotation, transform);
+            newBlock.GetComponent<AssembledBlock>().healthPoint = newBlockHealth;
+            // Destroy the original looseBlock
+            Destroy(looseBlock);
+            Destroy(grids[grid.x, grid.y]);
+            grids[grid.x, grid.y] = newBlock;
+            // Add a box collider
+            BoxCollider2D collider = gameObject.AddComponent<BoxCollider2D>() as BoxCollider2D;
+            collider.offset = new Vector2(grid.x - pilotColumn, pilotRow - grid.y);
+            colliders.Add(grid, collider);
+        }
     }
 
-    // public void AddObject(int row, int column, GameObject block)
+    // public void AddBlock(int row, int column, GameObject block)
     // {
     //     grids[row, column] = block;
     // }

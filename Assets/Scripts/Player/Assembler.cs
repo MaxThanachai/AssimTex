@@ -28,11 +28,12 @@ public class Assembler : MonoBehaviour
     {
         if (isDragging && !Input.GetMouseButton(0))
         {
+            gridManager.NotifyDroppedLooseBlock(GetMouseWorldPosition(), draggingBlock);
             Destroy(placeholder);
-            placeholder = null;
             isDragging = false;
+            placeholder = null;
+            draggingBlock = null;
             // TODO: Pass the draggingBlock with this function
-            gridManager.NotifyDroppedLooseBlock(GetMouseWorldPosition());
         }
         if (isDragging)
         {

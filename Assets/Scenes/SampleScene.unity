@@ -321,6 +321,33 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 81bb8bf2b2cc7414a910abab43aa73b6, type: 3}
+--- !u!1 &1626097677 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1965476554229058147, guid: dc258fbd5081d4777bcfc56f7f29fd04, type: 3}
+  m_PrefabInstance: {fileID: 1808772832}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1773428102 &1626097684
+ParentConstraint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1626097677}
+  m_Enabled: 1
+  m_Weight: 1
+  m_TranslationAtRest: {x: 0, y: -2, z: 0}
+  m_RotationAtRest: {x: 0, y: 0, z: 0}
+  m_TranslationOffsets: []
+  m_RotationOffsets: []
+  m_AffectTranslationX: 1
+  m_AffectTranslationY: 1
+  m_AffectTranslationZ: 1
+  m_AffectRotationX: 1
+  m_AffectRotationY: 1
+  m_AffectRotationZ: 1
+  m_IsContraintActive: 0
+  m_IsLocked: 0
+  m_Sources: []
 --- !u!1001 &1808772832
 PrefabInstance:
   m_ObjectHideFlags: 0

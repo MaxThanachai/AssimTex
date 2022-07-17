@@ -147,3 +147,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthPoint: 100
+  assembledPrefab: {fileID: 7848118680145721870, guid: 670e1f9d2e0714bf38480d274901beed, type: 3}
