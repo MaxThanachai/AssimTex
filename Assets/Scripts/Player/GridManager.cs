@@ -3,8 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// TODO: Change to GridManager
-public class GridsManager : MonoBehaviour
+public class GridManager : MonoBehaviour
 {
     public GameObject pilotPrefab;
     public GameObject gridPrefab;
@@ -39,7 +38,7 @@ public class GridsManager : MonoBehaviour
                     float x = c - pilotColumn;
                     float y = r - pilotRow;
                     block.transform.localPosition = new Vector3(x, y, 0);
-                    block.transform.rotation = transform.rotation;
+                    // block.transform.rotation = transform.rotation;
                 }
             }
         }
@@ -90,6 +89,8 @@ public class GridsManager : MonoBehaviour
     {
         Grid grid = WorldPositionToGrid(worldPosition);
         Debug.Log(grid.x + ", " + grid.y);
+
+        // filter out
     }
 
     // public void AddObject(int row, int column, GameObject block)

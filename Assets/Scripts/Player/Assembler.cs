@@ -2,14 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// TODO: Change to Assembler
-public class ClickListener : MonoBehaviour
+public class Assembler : MonoBehaviour
 {
     public GameObject placeholderPrefab;
 
     LayerMask looseBlockMask;
-    // TODO: If we use GridManger, change this too!
-    GridsManager gridsManager;
+    GridManager gridManager;
 
     bool isDragging;
     GameObject draggingBlock;
@@ -23,7 +21,7 @@ public class ClickListener : MonoBehaviour
     void InstantiateConfigs()
     {
         looseBlockMask = LayerMask.GetMask("LooseBlock");
-        gridsManager = gameObject.GetComponent<GridsManager>();
+        gridManager = gameObject.GetComponent<GridManager>();
     }
 
     void Update()
@@ -33,8 +31,8 @@ public class ClickListener : MonoBehaviour
             Destroy(placeholder);
             placeholder = null;
             isDragging = false;
-            // TODO: Notify GridsManager with the reference to the original block and the drop position
-            gridsManager.NotifyDroppedLooseBlock(GetMouseWorldPosition());
+            // TODO: Pass the draggingBlock with this function
+            gridManager.NotifyDroppedLooseBlock(GetMouseWorldPosition());
         }
         if (isDragging)
         {
