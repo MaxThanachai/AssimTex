@@ -21,11 +21,12 @@ public class GridManager : MonoBehaviour
         grids[1, 1] = Instantiate(pilotPrefab, transform.position, transform.rotation, transform);
         grids[1, 2] = Instantiate(gridPrefab, transform.position, transform.rotation, transform);
         CalculateGridHint();
+        PositionBlocks();
     }
 
     void Update()
     {
-        PositionBlocks();
+        // PositionBlocks();
     }
 
     void PositionBlocks()
@@ -96,6 +97,28 @@ public class GridManager : MonoBehaviour
         return new Grid(x + pilotColumn, pilotRow - y);
     }
 
+    public void NotifyDroppedLooseBlock(Vector3 worldPosition, GameObject looseBlock)
+    {
+        Grid grid = WorldPositionToGrid(worldPosition);
+        if (IsGridOutOfBound(grid) || !IsEmptyAndAttachableGrid(grid))
+        {
+            return;
+        }
+        AddNewBlock(grid, looseBlock);
+    }
+
+    void AddNewBlock(Grid grid, GameObject looseBlock)
+    {
+        GameObject newBlock = InstantiateAssembledBlock(looseBlock);
+        Destroy(looseBlock);
+        Destroy(grids[grid.x, grid.y]);
+        grids[grid.x, grid.y] = newBlock;
+        BoxCollider2D collider = gameObject.AddComponent<BoxCollider2D>() as BoxCollider2D;
+        collider.offset = new Vector2(grid.x - pilotColumn, pilotRow - grid.y);
+        colliders.Add(grid, collider);
+        PositionBlocks();
+    }
+
     GameObject InstantiateAssembledBlock(GameObject looseBlock)
     {
         int newBlockHealth = looseBlock.GetComponent<LooseBlock>().healthPoint;
@@ -103,27 +126,6 @@ public class GridManager : MonoBehaviour
         GameObject newBlock = Instantiate(newBlockPrefab, transform.position, transform.rotation, transform);
         newBlock.GetComponent<AssembledBlock>().healthPoint = newBlockHealth;
         return newBlock;
-    }
-
-    public void NotifyDroppedLooseBlock(Vector3 worldPosition, GameObject looseBlock)
-    {
-        Grid grid = WorldPositionToGrid(worldPosition);
-
-        if (IsGridOutOfBound(grid))
-        {
-            return;
-        }
-
-        if (IsEmptyAndAttachableGrid(grid))
-        {
-            GameObject newBlock = InstantiateAssembledBlock(looseBlock);
-            Destroy(looseBlock);
-            Destroy(grids[grid.x, grid.y]);
-            grids[grid.x, grid.y] = newBlock;
-            BoxCollider2D collider = gameObject.AddComponent<BoxCollider2D>() as BoxCollider2D;
-            collider.offset = new Vector2(grid.x - pilotColumn, pilotRow - grid.y);
-            colliders.Add(grid, collider);
-        }
     }
 }
 
