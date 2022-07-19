@@ -33,7 +33,6 @@ public class Assembler : MonoBehaviour
             isDragging = false;
             placeholder = null;
             draggingBlock = null;
-            // TODO: Pass the draggingBlock with this function
         }
         if (isDragging)
         {

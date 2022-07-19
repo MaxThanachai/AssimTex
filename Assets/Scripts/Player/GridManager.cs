@@ -40,10 +40,19 @@ public class GridManager : MonoBehaviour
                     float x = c - pilotColumn;
                     float y = pilotRow - r;
                     block.transform.localPosition = new Vector3(x, y, 0);
-                    // block.transform.rotation = transform.rotation;
                 }
             }
         }
+    }
+
+    bool IsGridOutOfBound(Grid grid)
+    {
+        return (grid.x < 0 || grid.y < 0 || grid.x > grids.GetUpperBound(0) || grid.y > grids.GetUpperBound(1));
+    }
+
+    bool IsEmptyAndAttachableGrid(Grid grid)
+    {
+        return (grids[grid.x, grid.y] != null && grids[grid.x, grid.y].GetComponent<GridHint>() != null);
     }
 
     void CalculateGridHint()
@@ -87,42 +96,35 @@ public class GridManager : MonoBehaviour
         return new Grid(x + pilotColumn, pilotRow - y);
     }
 
-    // TODO: Refactor this function, make it calls another one
+    GameObject InstantiateAssembledBlock(GameObject looseBlock)
+    {
+        int newBlockHealth = looseBlock.GetComponent<LooseBlock>().healthPoint;
+        GameObject newBlockPrefab = looseBlock.GetComponent<LooseBlock>().assembledPrefab;
+        GameObject newBlock = Instantiate(newBlockPrefab, transform.position, transform.rotation, transform);
+        newBlock.GetComponent<AssembledBlock>().healthPoint = newBlockHealth;
+        return newBlock;
+    }
+
     public void NotifyDroppedLooseBlock(Vector3 worldPosition, GameObject looseBlock)
     {
         Grid grid = WorldPositionToGrid(worldPosition);
-        Debug.Log(grid.x + ", " + grid.y);
 
-        // filter out index out of length
-        if (grid.x < 0 || grid.y < 0 || grid.x > grids.GetUpperBound(0) || grid.y > grids.GetUpperBound(1))
+        if (IsGridOutOfBound(grid))
         {
             return;
         }
 
-        // check if there is an empty space on that grid
-        if (grids[grid.x, grid.y] != null && grids[grid.x, grid.y].GetComponent<GridHint>() != null)
+        if (IsEmptyAndAttachableGrid(grid))
         {
-            // Add an assembled block to that space with health taken from the original block
-            int newBlockHealth = looseBlock.GetComponent<LooseBlock>().healthPoint;
-            GameObject newBlockPrefab = looseBlock.GetComponent<LooseBlock>().assembledPrefab;
-            GameObject newBlock = Instantiate(newBlockPrefab, transform.position, transform.rotation, transform);
-            newBlock.GetComponent<AssembledBlock>().healthPoint = newBlockHealth;
-            // Destroy the original looseBlock
+            GameObject newBlock = InstantiateAssembledBlock(looseBlock);
             Destroy(looseBlock);
             Destroy(grids[grid.x, grid.y]);
             grids[grid.x, grid.y] = newBlock;
-            // Add a box collider
             BoxCollider2D collider = gameObject.AddComponent<BoxCollider2D>() as BoxCollider2D;
             collider.offset = new Vector2(grid.x - pilotColumn, pilotRow - grid.y);
             colliders.Add(grid, collider);
         }
     }
-
-    // public void AddBlock(int row, int column, GameObject block)
-    // {
-    //     grids[row, column] = block;
-    // }
-
 }
 
 class Grid
