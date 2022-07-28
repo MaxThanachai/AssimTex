@@ -19,7 +19,6 @@ public class GridManager : MonoBehaviour
     void Start()
     {
         grids[1, 1] = Instantiate(pilotPrefab, transform.position, transform.rotation, transform);
-        grids[1, 2] = Instantiate(gridPrefab, transform.position, transform.rotation, transform);
         CalculateGridHint();
         PositionBlocks();
     }
@@ -51,9 +50,62 @@ public class GridManager : MonoBehaviour
         return (grid.x < 0 || grid.y < 0 || grid.x > grids.GetUpperBound(0) || grid.y > grids.GetUpperBound(1));
     }
 
+    bool IsGridOnTheEdge(Grid grid)
+    {
+        return (grid.x == 0 || grid.y == 0 || grid.x == grids.GetUpperBound(0) || grid.y == grids.GetUpperBound(1));
+    }
+
     bool IsEmptyAndAttachableGrid(Grid grid)
     {
         return (grids[grid.x, grid.y] != null && grids[grid.x, grid.y].GetComponent<GridHint>() != null);
+    }
+
+    Grid WorldPositionToGrid(Vector3 worldPosition)
+    {
+        Vector3 localPosition = transform.InverseTransformPoint(worldPosition);
+        int x = (int)Math.Round(localPosition.x);
+        int y = (int)Math.Round(localPosition.y);
+        return new Grid(x + pilotColumn, pilotRow - y);
+    }
+
+    // TODO: There is sometimes a duplicate grid hint at the last column on pilot row (the flaw might be in another function)
+    Grid ResizeForNewGrid(Grid newGrid)
+    {
+        if (newGrid.x == 0)
+        {
+            GameObject[,] recalculatedGrids = new GameObject[grids.GetLength(0) + 1, grids.GetLength(1)];
+            Debug.Log("recalculatedGrids[" + recalculatedGrids.GetLength(0) + ", " + recalculatedGrids.GetLength(1) + "]");
+            column += 1;
+            pilotColumn += 1;
+            Debug.Log("column = " + column);
+            for (int c = 1; c < column - 1; c++)
+            {
+                for (int r = 0; r < row; r++)
+                {
+                    recalculatedGrids[c, r] = grids[c - 1, r];
+                }
+            }
+            grids = recalculatedGrids;
+            return new Grid(newGrid.x + 1, newGrid.y);
+        }
+        if (newGrid.x == grids.GetUpperBound(0))
+        {
+            GameObject[,] recalculatedGrids = new GameObject[grids.GetLength(0) + 1, grids.GetLength(1)];
+            Debug.Log("recalculatedGrids[" + recalculatedGrids.GetLength(0) + ", " + recalculatedGrids.GetLength(1) + "]");
+            column += 1;
+            Debug.Log("column = " + column);
+            for (int c = 0; c < column - 1; c++)
+            {
+                for (int r = 0; r < row; r++)
+                {
+                    recalculatedGrids[c, r] = grids[c, r];
+                }
+            }
+            grids = recalculatedGrids;
+            return newGrid;
+        }
+        Debug.Log("Not implemented yet!");
+        return null;
     }
 
     void CalculateGridHint()
@@ -89,14 +141,6 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    Grid WorldPositionToGrid(Vector3 worldPosition)
-    {
-        Vector3 localPosition = transform.InverseTransformPoint(worldPosition);
-        int x = (int)Math.Round(localPosition.x);
-        int y = (int)Math.Round(localPosition.y);
-        return new Grid(x + pilotColumn, pilotRow - y);
-    }
-
     public void NotifyDroppedLooseBlock(Vector3 worldPosition, GameObject looseBlock)
     {
         Grid grid = WorldPositionToGrid(worldPosition);
@@ -109,13 +153,21 @@ public class GridManager : MonoBehaviour
 
     void AddNewBlock(Grid grid, GameObject looseBlock)
     {
+        if (IsGridOnTheEdge(grid))
+        {
+            grid = ResizeForNewGrid(grid);
+        }
+
         GameObject newBlock = InstantiateAssembledBlock(looseBlock);
         Destroy(looseBlock);
+        Debug.Log("grid at (" + grid.x + ", " + grid.y + ") = " + grids[grid.x, grid.y]);
         Destroy(grids[grid.x, grid.y]);
+        Debug.Log("Destroy hint grid at (" + grid.x + ", " + grid.y + ")");
         grids[grid.x, grid.y] = newBlock;
         BoxCollider2D collider = gameObject.AddComponent<BoxCollider2D>() as BoxCollider2D;
         collider.offset = new Vector2(grid.x - pilotColumn, pilotRow - grid.y);
         colliders.Add(grid, collider);
+        CalculateGridHint();
         PositionBlocks();
     }
 
