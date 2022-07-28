@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,14 +6,17 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
     public float ThrusterPower = 1000;
-    public float TurningTorque = 300;
+    public float TurningAcceleration = 60;
+    public float TurningSpeed = 180;
+    public float TurningDrag = 30;
 
     private Rigidbody2D body;
 
+    float currentTurningSpeed = 0;
     bool IsPressingLeft = false;
     bool IsPressingRight = false;
-    Vector3 leftThrusterPosition;
-    Vector3 rightThrusterPosition;
+    // Vector3 leftThrusterPosition;
+    // Vector3 rightThrusterPosition;
 
     void Start()
     {
@@ -22,23 +26,24 @@ public class Movement : MonoBehaviour
     void Update()
     {
         CheckKeyboard();
-        CheckThrustersPosition();
+        // CheckThrustersPosition();
         Move();
+        Turn();
     }
 
-    void OnDrawGizmos()
-    {
-        if (IsPressingLeft)
-        {
-            Gizmos.color = Color.green;
-            Gizmos.DrawSphere(leftThrusterPosition, 0.1f);
-        }
-        if (IsPressingRight)
-        {
-            Gizmos.color = Color.green;
-            Gizmos.DrawSphere(rightThrusterPosition, 0.1f);
-        }
-    }
+    // void OnDrawGizmos()
+    // {
+    //     if (IsPressingLeft)
+    //     {
+    //         Gizmos.color = Color.green;
+    //         Gizmos.DrawSphere(leftThrusterPosition, 0.1f);
+    //     }
+    //     if (IsPressingRight)
+    //     {
+    //         Gizmos.color = Color.green;
+    //         Gizmos.DrawSphere(rightThrusterPosition, 0.1f);
+    //     }
+    // }
 
     void CheckKeyboard()
     {
@@ -61,22 +66,43 @@ public class Movement : MonoBehaviour
         }
     }
 
-    void CheckThrustersPosition()
+    // void CheckThrustersPosition()
+    // {
+    //     leftThrusterPosition = transform.position + (transform.right * -0.5f) + (transform.up * -0.5f);
+    //     rightThrusterPosition = transform.position + (transform.right * 0.5f) + (transform.up * -0.5f);
+    // }
+
+    void Turn()
     {
-        leftThrusterPosition = transform.position + (transform.right * -0.5f) + (transform.up * -0.5f);
-        rightThrusterPosition = transform.position + (transform.right * 0.5f) + (transform.up * -0.5f);
+        if (IsPressingLeft && !IsPressingRight)
+        {
+            currentTurningSpeed -= TurningAcceleration * Time.deltaTime;
+        }
+        else if (IsPressingRight && !IsPressingLeft)
+        {
+            currentTurningSpeed += TurningAcceleration * Time.deltaTime;
+        }
+        else
+        {
+            if (Math.Abs(currentTurningSpeed) - (TurningDrag * Time.deltaTime) > 0)
+            {
+                currentTurningSpeed -= TurningDrag * Math.Sign(currentTurningSpeed) * Time.deltaTime;
+            }
+            else
+            {
+                currentTurningSpeed = 0;
+            }
+        }
+        if (Math.Abs(currentTurningSpeed) > TurningSpeed)
+        {
+            currentTurningSpeed = TurningSpeed * Math.Sign(currentTurningSpeed);
+        }
+        Vector3 rotation = new Vector3(0, 0, currentTurningSpeed * Time.deltaTime);
+        transform.Rotate(rotation);
     }
 
     void Move()
     {
-        if (IsPressingLeft)
-        {
-            body.AddTorque(-TurningTorque * Time.deltaTime);
-        }
-        if (IsPressingRight)
-        {
-            body.AddTorque(TurningTorque * Time.deltaTime);
-        }
         if (IsPressingLeft && IsPressingRight)
         {
             body.AddRelativeForce(new Vector2(0, ThrusterPower * Time.deltaTime));

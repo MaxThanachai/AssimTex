@@ -110,7 +110,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ThrusterPower: 1000
-  TurningTorque: 300
+  TurningAcceleration: 360
+  TurningSpeed: 180
+  TurningDrag: 180
 --- !u!114 &5860270753175099208
 MonoBehaviour:
   m_ObjectHideFlags: 0
