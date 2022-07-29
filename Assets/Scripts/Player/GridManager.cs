@@ -99,7 +99,36 @@ public class GridManager : MonoBehaviour
             grids = recalculatedGrids;
             return newGrid;
         }
-        Debug.Log("Not implemented yet!");
+        if (newGrid.y == 0)
+        {
+            GameObject[,] recalculatedGrids = new GameObject[grids.GetLength(0), grids.GetLength(1) + 1];
+            row += 1;
+            pilotRow += 1;
+            for (int c = 0; c < column; c++)
+            {
+                for (int r = 1; r < row; r++)
+                {
+                    recalculatedGrids[c, r] = grids[c, r - 1];
+                }
+            }
+            grids = recalculatedGrids;
+            return new Grid(newGrid.x, newGrid.y + 1);
+        }
+        if (newGrid.y == grids.GetUpperBound(1))
+        {
+            GameObject[,] recalculatedGrids = new GameObject[grids.GetLength(0), grids.GetLength(1) + 1];
+            row += 1;
+            for (int c = 0; c < column; c++)
+            {
+                for (int r = 0; r < row - 1; r++)
+                {
+                    recalculatedGrids[c, r] = grids[c, r];
+                }
+            }
+            grids = recalculatedGrids;
+            return newGrid;
+        }
+        Debug.LogError("Invalid call: ResizeForNewGrid" + newGrid.ToString());
         return null;
     }
 
