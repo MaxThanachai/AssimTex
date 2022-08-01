@@ -8,6 +8,8 @@ public class GridManager : MonoBehaviour
     public GameObject pilotPrefab;
     public GameObject gridPrefab;
 
+    private Rigidbody2D body;
+
     private int column = 3;
     private int row = 3;
     private int pilotColumn = 1;
@@ -18,6 +20,8 @@ public class GridManager : MonoBehaviour
 
     void Start()
     {
+        body = GetComponent<Rigidbody2D>();
+
         grids[1, 1] = Instantiate(pilotPrefab, transform.position, transform.rotation, transform);
         CalculateGridHint();
         PositionBlocks();
@@ -191,6 +195,7 @@ public class GridManager : MonoBehaviour
         colliders.Add(grid, collider);
         CalculateGridHint();
         PositionBlocks();
+        AddMass(0.2f);
     }
 
     GameObject InstantiateAssembledBlock(GameObject looseBlock)
@@ -200,6 +205,11 @@ public class GridManager : MonoBehaviour
         GameObject newBlock = Instantiate(newBlockPrefab, transform.position, transform.rotation, transform);
         newBlock.GetComponent<AssembledBlock>().healthPoint = newBlockHealth;
         return newBlock;
+    }
+
+    void AddMass(float mass)
+    {
+        // body.mass += mass;
     }
 
     void TestLogGrid()

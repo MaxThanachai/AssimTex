@@ -6,17 +6,18 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
     public float ThrusterPower = 1000;
-    public float TurningAcceleration = 60;
+    public float TurningAcceleration = 10;
     public float TurningSpeed = 180;
     public float TurningDrag = 30;
 
     private Rigidbody2D body;
 
     float currentTurningSpeed = 0;
+
     bool IsPressingLeft = false;
     bool IsPressingRight = false;
-    // Vector3 leftThrusterPosition;
-    // Vector3 rightThrusterPosition;
+    Vector3 leftThrusterPosition;
+    Vector3 rightThrusterPosition;
 
     void Start()
     {
@@ -26,13 +27,13 @@ public class Movement : MonoBehaviour
     void Update()
     {
         CheckKeyboard();
-        // CheckThrustersPosition();
         Move();
         Turn();
     }
 
     // void OnDrawGizmos()
     // {
+    //     CheckThrustersPosition();
     //     if (IsPressingLeft)
     //     {
     //         Gizmos.color = Color.green;
@@ -66,11 +67,11 @@ public class Movement : MonoBehaviour
         }
     }
 
-    // void CheckThrustersPosition()
-    // {
-    //     leftThrusterPosition = transform.position + (transform.right * -0.5f) + (transform.up * -0.5f);
-    //     rightThrusterPosition = transform.position + (transform.right * 0.5f) + (transform.up * -0.5f);
-    // }
+    void CheckThrustersPosition()
+    {
+        leftThrusterPosition = transform.position + (transform.right * -0.5f) + (transform.up * -0.5f);
+        rightThrusterPosition = transform.position + (transform.right * 0.5f) + (transform.up * -0.5f);
+    }
 
     void Turn()
     {
@@ -97,8 +98,7 @@ public class Movement : MonoBehaviour
         {
             currentTurningSpeed = TurningSpeed * Math.Sign(currentTurningSpeed);
         }
-        Vector3 rotation = new Vector3(0, 0, currentTurningSpeed * Time.deltaTime);
-        transform.Rotate(rotation);
+        body.angularVelocity = currentTurningSpeed;
     }
 
     void Move()
