@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 8078222478530335892}
   - component: {fileID: 4944320337030181306}
   - component: {fileID: 5860270753175099208}
+  - component: {fileID: 3934935574971065315}
   m_Layer: 0
   m_Name: PlayerController
   m_TagString: Untagged
@@ -53,7 +54,7 @@ Rigidbody2D:
   m_AngularDrag: 10
   m_GravityScale: 0
   m_Material: {fileID: 0}
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
@@ -110,9 +111,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ThrusterPower: 1000
-  TurningAcceleration: 360
-  TurningSpeed: 180
-  TurningDrag: 180
+  TurningAcceleration: 450
+  TurningSpeed: 270
+  TurningDrag: 270
 --- !u!114 &5860270753175099208
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -126,3 +127,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   placeholderPrefab: {fileID: 2102942953600993953, guid: 4a3b9851b1388480799f3c8a8f43e190, type: 3}
+--- !u!114 &3934935574971065315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1965476554229058147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85184fc1415aa4557b20b7f46615461f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MainCamera: {fileID: 0}

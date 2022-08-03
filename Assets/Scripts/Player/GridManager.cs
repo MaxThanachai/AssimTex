@@ -209,7 +209,7 @@ public class GridManager : MonoBehaviour
 
     void AddMass(float mass)
     {
-        // body.mass += mass;
+        body.mass += mass;
     }
 
     void TestLogGrid()

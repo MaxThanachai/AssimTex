@@ -6,14 +6,14 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
     public float ThrusterPower = 1000;
-    public float TurningAcceleration = 10;
-    public float TurningSpeed = 180;
-    public float TurningDrag = 30;
+    // TODO: Still need fine tuning
+    public float TurningAcceleration = 450;
+    public float TurningSpeed = 270;
+    public float TurningDrag = 270;
 
     private Rigidbody2D body;
 
     float currentTurningSpeed = 0;
-
     bool IsPressingLeft = false;
     bool IsPressingRight = false;
     Vector3 leftThrusterPosition;
